@@ -16,7 +16,7 @@ class LoginPage extends StatelessWidget {
           mainAxisAlignment: MainAxisAlignment.center,
           children: [
             const Text(
-              'Welcome Back',
+              'Welcome Back..!',
               style: TextStyle(
                 fontSize: 28,
                 fontWeight: FontWeight.bold,
@@ -33,6 +33,19 @@ class LoginPage extends StatelessWidget {
                   prefixIcon: const Icon(Icons.phone_android),
                   labelText: 'Mobile Number',
                   hintText: 'Enter Your Mobile Number'),
+            ),
+            const SizedBox(height: 10),
+            ElevatedButton(
+              onPressed: () {},
+              style: ElevatedButton.styleFrom(
+                foregroundColor: Colors.white,
+                backgroundColor: Colors.deepPurple,
+              ),
+              child: const Text('Login'),
+            ),
+            TextButton(
+              onPressed: () {},
+              child: const Text('Register New Account'),
             ),
           ],
         ),
