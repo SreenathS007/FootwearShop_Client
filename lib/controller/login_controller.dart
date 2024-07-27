@@ -22,6 +22,18 @@ class LoginController extends GetxController {
   int? otpSend;
   int? otpEnter;
 
+  User? loginUser;
+
+  @override
+  void onReady() {
+    Map<String, dynamic>? user = box.read('loginUser');
+    if (user != null) {
+      loginUser = User.fromJson(user);
+      Get.to(const HomePage());
+    }
+    super.onReady();
+  }
+
   @override
   void onInit() {
     userCollection = firestore.collection('users');
@@ -92,7 +104,7 @@ class LoginController extends GetxController {
           var userData = userDoc.data() as Map<String, dynamic>;
           box.write('loginUser', userData);
           loginNumberCtrl.clear();
-          Get.to(HomePage());
+          Get.to(const HomePage());
           Get.snackbar('Success', 'Login Successful', colorText: Colors.green);
         } else {
           Get.snackbar('Error', 'User not found , Please register',

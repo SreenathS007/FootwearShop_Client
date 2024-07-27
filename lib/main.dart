@@ -1,15 +1,22 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:get_storage/get_storage.dart';
+import 'package:shopy_client/controller/home_controller.dart';
 import 'package:shopy_client/controller/login_controller.dart';
 import 'package:shopy_client/firebase_option.dart';
 import 'package:shopy_client/pages/login_page.dart';
 import 'package:shopy_client/pages/register_page.dart';
 
 void main() async {
+  //initializing get storage
+  await GetStorage.init();
+  //initializing firebase
   WidgetsFlutterBinding.ensureInitialized();
   await Firebase.initializeApp(options: firebaseOptions);
+
   Get.put(LoginController());
+  Get.put(HomeController());
   runApp(const MyApp());
 }
 
