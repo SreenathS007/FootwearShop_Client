@@ -15,93 +15,112 @@ class HomePage extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<HomeController>(builder: (ctrl) {
-      return Scaffold(
-        appBar: AppBar(
-          backgroundColor: Colors.amber,
-          centerTitle: true,
-          title: Text(
-            'Footwear Store',
-            style: TextStyle(fontWeight: FontWeight.bold),
-          ),
-          actions: [
-            IconButton(
-              onPressed: () {
-                GetStorage box = GetStorage();
-                box.erase();
-                Get.offAll(LoginPage());
-              },
-              icon: Icon(Icons.logout),
+      return RefreshIndicator(
+        onRefresh: () async {
+          ctrl.fetchProducts();
+        },
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Colors.amber,
+            centerTitle: true,
+            title: Text(
+              'Footwear Store',
+              style: TextStyle(fontWeight: FontWeight.bold),
             ),
-          ],
-        ),
-        body: Column(
-          children: [
-            SizedBox(
-              height: 50,
-              child: ListView.builder(
-                scrollDirection: Axis.horizontal,
-                itemCount: ctrl.productCategories.length,
-                itemBuilder: (context, index) {
-                  return Padding(
-                    padding: const EdgeInsets.all(6),
-                    child: Chip(
-                        label: Text(
-                            ctrl.productCategories[index].name ?? 'Error')),
-                  );
+            actions: [
+              IconButton(
+                onPressed: () {
+                  GetStorage box = GetStorage();
+                  box.erase();
+                  Get.offAll(LoginPage());
                 },
+                icon: Icon(Icons.logout),
               ),
-            ),
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 8.0),
-              child: Row(
-                children: [
-                  Expanded(
-                    child: DropDownBtn(
-                      items: ['Rs: Low to High', 'Rs: High to Low'],
-                      selectedItemText: 'Sort',
-                      onSelected: (selected) {},
-                    ),
-                  ),
-                  Expanded(
-                    child: MultiSelectDropDown(
-                      items: ['item1', 'item2', 'item3'],
-                      onSelectionChanged: (selectedItems) {},
-                    ),
-                  ),
-                ],
-              ),
-            ),
-            Expanded(
-              child: Padding(
-                padding: const EdgeInsets.all(8.0),
-                child: GridView.builder(
-                  gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
-                    crossAxisCount: 2,
-                    childAspectRatio: 0.7, // Adjusted childAspectRatio
-                    crossAxisSpacing: 8,
-                    mainAxisSpacing: 8,
-                  ),
-                  itemCount: ctrl.products.length,
+            ],
+          ),
+          body: Column(
+            children: [
+              SizedBox(
+                height: 50,
+                child: ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  itemCount: ctrl.productCategories.length,
                   itemBuilder: (context, index) {
-                    return ProductCard(
-                      name: ctrl.products[index].name ?? 'No name',
-                      imageUrl: ctrl.products[index].image ?? 'url',
-                      price: ctrl.products[index].price ?? 00,
-                      offerTag: '30% off',
+                    return InkWell(
                       onTap: () {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => const ProductDescription(),
-                          ),
-                        );
+                        ctrl.filterByCategory(
+                            ctrl.productCategories[index].name ?? '');
                       },
+                      child: Padding(
+                        padding: const EdgeInsets.all(6),
+                        child: Chip(
+                            label: Text(
+                                ctrl.productCategories[index].name ?? 'Error')),
+                      ),
                     );
                   },
                 ),
               ),
-            ),
-          ],
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 8.0),
+                child: Row(
+                  children: [
+                    Expanded(
+                      child: DropDownBtn(
+                        items: ['Rs: Low to High', 'Rs: High to Low'],
+                        selectedItemText: 'Sort',
+                        onSelected: (selected) {
+                          ctrl.sortByPrice(
+                              ascending:
+                                  selected == 'Rs: Low to High' ? true : false);
+                        },
+                      ),
+                    ),
+                    Expanded(
+                      child: MultiSelectDropDown(
+                        items: [
+                          'Adidas',
+                          'Nike',
+                          'Puma',
+                          'Woodland',
+                          'Sketchers'
+                        ],
+                        onSelectionChanged: (selectedItems) {
+                          ctrl.filterByBrand(selectedItems);
+                        },
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: GridView.builder(
+                    gridDelegate: SliverGridDelegateWithFixedCrossAxisCount(
+                      crossAxisCount: 2,
+                      childAspectRatio: 0.7, // Adjusted childAspectRatio
+                      crossAxisSpacing: 8,
+                      mainAxisSpacing: 8,
+                    ),
+                    itemCount: ctrl.productShowInUi.length,
+                    itemBuilder: (context, index) {
+                      return ProductCard(
+                        name: ctrl.productShowInUi[index].name ?? 'No name',
+                        imageUrl: ctrl.productShowInUi[index].image ?? 'url',
+                        price: ctrl.productShowInUi[index].price ?? 00,
+                        offerTag: '30% off',
+                        onTap: () {
+                          Get.to(const ProductDescription(),
+                              arguments: {'data': ctrl.productShowInUi[index]});
+                        },
+                      );
+                    },
+                  ),
+                ),
+              ),
+            ],
+          ),
         ),
       );
     });

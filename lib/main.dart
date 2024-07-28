@@ -4,6 +4,7 @@ import 'package:get/get.dart';
 import 'package:get_storage/get_storage.dart';
 import 'package:shopy_client/controller/home_controller.dart';
 import 'package:shopy_client/controller/login_controller.dart';
+import 'package:shopy_client/controller/purchase_controller.dart';
 import 'package:shopy_client/firebase_option.dart';
 import 'package:shopy_client/pages/login_page.dart';
 import 'package:shopy_client/pages/register_page.dart';
@@ -17,6 +18,7 @@ void main() async {
 
   Get.put(LoginController());
   Get.put(HomeController());
+  Get.put(PurchaseController());
   runApp(const MyApp());
 }
 

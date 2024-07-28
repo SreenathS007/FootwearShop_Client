@@ -12,6 +12,7 @@ class HomeController extends GetxController {
 //product Catewgory reference
   late CollectionReference catogoryCollection;
   List<Product> products = [];
+  List<Product> productShowInUi = [];
   List<ProductCategory> productCategories = [];
 
   @override
@@ -32,6 +33,7 @@ class HomeController extends GetxController {
           .toList();
       products.clear();
       products.assignAll(retrievedProducts);
+      productShowInUi.assignAll(products);
       Get.snackbar('Success', 'Product fetch Successfuly',
           colorText: Colors.green);
     } catch (e) {
@@ -57,5 +59,36 @@ class HomeController extends GetxController {
     } finally {
       update();
     }
+  }
+
+  filterByCategory(String category) {
+    productShowInUi.clear();
+    productShowInUi =
+        products.where((product) => product.category == category).toList();
+    update();
+  }
+
+  filterByBrand(List<String> brands) {
+    if (brands.isEmpty) {
+      productShowInUi = products;
+    } else {
+      List<String> lowerCaseBrands =
+          brands.map((brand) => brand.toLowerCase()).toList();
+
+      productShowInUi = products
+          .where((product) =>
+              lowerCaseBrands.contains(product.brand?.toLowerCase()))
+          .toList();
+    }
+    update();
+  }
+
+  sortByPrice({required bool ascending}) {
+    List<Product> sortedProducts = List<Product>.from(productShowInUi);
+    sortedProducts.sort((a, b) => ascending
+        ? a.price!.compareTo(b.price!)
+        : b.price!.compareTo(a.price!));
+    productShowInUi = sortedProducts;
+    update();
   }
 }
